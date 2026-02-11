@@ -10,6 +10,7 @@ Here're some of the project's best features:
 
 *   Terminal utilities
 *   Work with text files
+*   Access os and hardware information
 
 <h2>🛠️ Installation Steps:</h2>
 
