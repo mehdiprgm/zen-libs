@@ -4,8 +4,6 @@
 #include <string>
 #include <cstring>
 
-#include "StringOperation.h"
-
 using std::cout, std::cin, std::endl;
 
 namespace zen::corex {
