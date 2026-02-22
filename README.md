@@ -11,6 +11,7 @@ Here're some of the project's best features:
 *   Terminal utilities
 *   Work with text files
 *   Access os and hardware information
+*   New data structures and String type
 
 <h2>🛠️ Installation Steps:</h2>
 
@@ -32,9 +33,12 @@ g++ -o program main.cpp -L/path/to/libs -lmath -lutils -lnetwork
 
 Technologies used in the project:
 
-*   C++ 17
+*   C++ 20
 *   GNU Compiler
 
 <h2>💖Like my work?</h2>
 
 You can contact me about this project i would like to hear your comments.
+
+Telegram:       @zenDEv2
+Email:              zendevmehdi@gmail.com
