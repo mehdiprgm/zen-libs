@@ -5,13 +5,19 @@
 
 #include "Conio.h"
 
+#define ENTER 10
+#define TAB 9
+#define BKSP 127
+
+#define MAX_INPUT_LIMIT 1000
+
 #define FR_RED_BOLD         "\u001b[1;31m"
 #define FR_GREEN_BOLD       "\u001b[1;32m"
 #define FR_BLUE_BOLD        "\u001b[1;34m"
 #define FR_YELLOW_BOLD      "\u001b[1;33m"
 #define FR_RESET            "\u001b[0m"
 
-using namespace std;
+using std::cout, std::cin, std::endl;
 
 /**
  * @namespace zen::terminal
@@ -59,14 +65,14 @@ namespace zen::terminal {
      *
      * @param message Message displayed to the user
      */
-    void pressEnter(const string& message = "Press enter to continue!... ");
+    void pressEnter(const std::string& message = "Press enter to continue!... ");
 
     /**
      * @brief Prompts the user to press any key to continue.
      *
      * @param message Message displayed to the user
      */
-    void pressAnyKey(const string& message = "Press any key to continue!... ");
+    void pressAnyKey(const std::string& message = "Press any key to continue!... ");
 
     /**
      * @brief Clears the entire terminal screen.
@@ -92,7 +98,7 @@ namespace zen::terminal {
      * @param repeat If true, repeats the prompt until a valid answer is given
      * @return User's selected answer
      */
-    Answer sure(const string& message, bool repeat = false);
+    Answer sure(const std::string& message, bool repeat = false);
 
     /**
      * @brief Displays a multiple-choice question and gets user's selection.
@@ -102,7 +108,10 @@ namespace zen::terminal {
      * @param repeat If true, repeats the prompt until a valid option is chosen
      * @return Index of the selected option
      */
-    int ask(const string& message, const vector<string>& options, bool repeat);
+    int ask(const std::string& message, const std::vector<std::string>& options, bool repeat);
+
+    std::string read(const std::string& message = "", int inputLimit = MAX_INPUT_LIMIT,
+                        bool echo = true, bool password = false);
 
     /**
      * @brief Prints a value to the terminal with optional colored formatting.

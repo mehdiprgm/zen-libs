@@ -1,74 +1,74 @@
 #include "TextFile.h"
 
 namespace zen::file::text {
-    TextFile::TextFile(const string& filePath) : filePath(filePath) {}
+    TextFile::TextFile(const std::string& filePath) : filePath(filePath) {}
 
-    unique_ptr<ifstream> TextFile::createInputStream() {
-        auto inStream = make_unique<ifstream>(filePath);
+    std::unique_ptr<std::ifstream> TextFile::createInputStream() {
+        auto inStream = std::make_unique<std::ifstream>(filePath);
         if (!inStream->is_open()) {
-            throw runtime_error("Failed to open file: " + filePath);
+            throw std::runtime_error("Failed to open file: " + filePath);
         }
 
         return inStream;
     }
 
-    unique_ptr<ofstream> TextFile::createOutputStream(bool append) {
-        unique_ptr<ofstream> opStream;
+    std::unique_ptr<std::ofstream> TextFile::createOutputStream(bool append) {
+        std::unique_ptr<std::ofstream> opStream;
 
         if (append) {
-            opStream = make_unique<ofstream>(filePath, ios::app);
+            opStream = std::make_unique<std::ofstream>(filePath, std::ios::app);
         } else {
-            opStream = make_unique<ofstream>(filePath);
+            opStream = std::make_unique<std::ofstream>(filePath);
         }
 
         if (!opStream->is_open()) {
-            throw runtime_error("Failed to open file: " + filePath);
+            throw std::runtime_error("Failed to open file: " + filePath);
         }
 
         return opStream;
     }
 
-    string TextFile::read() {
+    std::string TextFile::read() {
         auto stream = createInputStream();
 
-        ostringstream buffer;
+        std::ostringstream buffer;
         buffer << stream->rdbuf();
 
         return buffer.str();
     }
 
-    string TextFile::readFirstLine() {
+    std::string TextFile::readFirstLine() {
         auto stream = createInputStream();
-        string firstLine;
+        std::string firstLine;
 
-        getline(*stream, firstLine);
+        std::getline(*stream, firstLine);
         return firstLine;
     }
 
-    string TextFile::readLastLine() {
+    std::string TextFile::readLastLine() {
         auto stream = createInputStream();
 
-        string line;
-        while (getline(*stream, line)) {
+        std::string line;
+        while (std::getline(*stream, line)) {
         }
 
         return line;
     }
 
-    vector<string> TextFile::readAllLines() {
+    std::vector<std::string> TextFile::readAllLines() {
         auto stream = createInputStream();
 
-        string line;
-        vector<string> lines;
+        std::string line;
+        std::vector<std::string> lines;
 
-        while(getline(*stream, line)) {
+        while(std::getline(*stream, line)) {
             lines.push_back(line);
         }
 
         return lines;
     }
 
-    bool TextFile::write(const string& content, bool append) {
+    bool TextFile::write(const std::string& content, bool append) {
         auto stream = createOutputStream(append);
         *stream << content;
         
@@ -80,13 +80,13 @@ namespace zen::file::text {
         return true;
     }
 
-    size_t TextFile::find(const string& key, bool isCaseSensitive, bool findWholeWord) {
+    size_t TextFile::find(const std::string& key, bool isCaseSensitive, bool findWholeWord) {
         auto stream = createInputStream();
 
-        string line, newkey = key;
+        std::string line, newkey = key;
         size_t foundItems = 0;
 
-        while(getline(*stream, line)) {
+        while(std::getline(*stream, line)) {
             if (!isCaseSensitive) {
                 transform(newkey.begin(), newkey.end(), newkey.begin(), ::tolower);
                 transform(line.begin(), line.end(), line.begin(), ::tolower);
@@ -97,7 +97,7 @@ namespace zen::file::text {
                     foundItems++;
                 }
             } else {
-                if (line.find(newkey) != string::npos) {
+                if (line.find(newkey) != std::string::npos) {
                     foundItems++;
                 }
             }
@@ -109,16 +109,16 @@ namespace zen::file::text {
     size_t TextFile::count(CountItem item) {
         auto stream = createInputStream();
 
-        string line;
+        std::string line;
         size_t count = 0;
 
-        while(getline(*stream, line)) {
+        while(std::getline(*stream, line)) {
             switch(item) {
                 case CountItem::Words: {
-                    istringstream iss(line);
-                    vector<string> words;
+                    std::istringstream iss(line);
+                    std::vector<std::string> words;
 
-                    string word;
+                    std::string word;
                     while (iss >> word) {
                         words.push_back(word);
                     }

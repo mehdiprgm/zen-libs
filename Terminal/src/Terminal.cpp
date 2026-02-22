@@ -11,12 +11,12 @@ namespace zen::terminal {
         }
     }
 
-    void pressEnter(const string& message) {
+    void pressEnter(const std::string& message) {
         cout << message;
         getchar();
     }
 
-    void pressAnyKey(const string& message) {
+    void pressAnyKey(const std::string& message) {
         cout << message;
 
         getch();
@@ -37,7 +37,7 @@ namespace zen::terminal {
         cout << "\r\r";
     }
 
-    Answer sure(const string& message, bool repeat) {
+    Answer sure(const std::string& message, bool repeat) {
         char ch;
 
         do {
@@ -55,8 +55,8 @@ namespace zen::terminal {
         return Answer::Cancel;
     }
 
-    int ask(const string& message, const vector<string>& options, bool repeat) {
-        string newMessage, answer;
+    int ask(const std::string& message, const std::vector<std::string>& options, bool repeat) {
+        std::string newMessage, answer;
 
         do {
             newMessage = message + " [";
@@ -82,5 +82,49 @@ namespace zen::terminal {
         } while(repeat);
 
         return -1;
+    }
+
+    std::string read(const std::string& message, int inputLimit, bool echo, bool password) {
+        std::string result;
+
+        char ch;
+        int i = 0;
+
+        cout << message;
+
+        do {
+            if (i == inputLimit) {
+                result[i] = '\0';
+                break;
+            }
+
+            ch = getch();
+
+            if (ch == ENTER || ch == TAB) {
+                result[i] = '\0';
+                break;
+            } else if (ch == BKSP) {
+                if (i > 0) {
+                    if (echo) {
+                        cout << "\b \b";
+                    }
+
+                    i--;
+                }
+            } else {
+                if (echo) {
+                    if (password) {
+                        cout << "*";
+                    } else {
+                        cout << ch;
+                    }
+                }
+
+                result[i++] = ch;
+            }
+        } while(true);
+
+        cout << endl;
+        return result.c_str();
     }
 }

@@ -11,7 +11,7 @@
 
 #include "CountItem.h"
 
-using namespace std;
+using std::cout, std::cin, std::endl;
 
 /**
  * @namespace zen::file::text
@@ -44,7 +44,7 @@ namespace zen::file::text {
      */
     class TextFile {
     private:
-        string filePath;  ///< Absolute or relative path to the text file
+        std::string filePath;  ///< Absolute or relative path to the text file
 
         /**
          * @brief Creates an input stream for reading from the file.
@@ -56,7 +56,7 @@ namespace zen::file::text {
          * @note The caller is responsible for the stream's lifecycle. The stream
          *       will be automatically closed when the unique_ptr is destroyed.
          */
-        unique_ptr<ifstream> createInputStream();
+        std::unique_ptr<std::ifstream> createInputStream();
         
         /**
          * @brief Creates an output stream for writing to the file.
@@ -69,7 +69,7 @@ namespace zen::file::text {
          * @note In append mode, new content is added to the end of the file without
          *       affecting existing content.
          */
-        unique_ptr<ofstream> createOutputStream(bool append = false);
+        std::unique_ptr<std::ofstream> createOutputStream(bool append = false);
         
     public:
         /**
@@ -83,12 +83,12 @@ namespace zen::file::text {
          * @warning The file path is stored but not validated until an I/O operation
          *          is attempted.
          */
-        TextFile(const string& filePath);
+        TextFile(const std::string& filePath);
 
         /**
-         * @brief Reads the entire content of the file into a string.
+         * @brief Reads the entire content of the file into a std::string.
          * 
-         * @return string The complete content of the file.
+         * @return std::string The complete content of the file.
          * 
          * @exception std::runtime_error Thrown if the file cannot be read.
          * @exception std::bad_alloc Thrown if memory allocation fails for large files.
@@ -98,50 +98,50 @@ namespace zen::file::text {
          * 
          * @see readAllLines()
          */
-        string read();
+        std::string read();
         
         /**
          * @brief Reads only the first line from the file.
          * 
-         * @return string The first line of the file, or empty string if file is empty.
+         * @return std::string The first line of the file, or empty std::string if file is empty.
          * 
          * @exception std::runtime_error Thrown if the file cannot be read.
          * 
-         * @note Leading and trailing whitespace is preserved in the returned string.
-         *       Empty lines are returned as empty strings.
+         * @note Leading and trailing whitespace is preserved in the returned std::string.
+         *       Empty lines are returned as empty std::strings.
          */
-        string readFirstLine();
+        std::string readFirstLine();
         
         /**
          * @brief Reads only the last line from the file.
          * 
-         * @return string The last line of the file, or empty string if file is empty.
+         * @return std::string The last line of the file, or empty std::string if file is empty.
          * 
          * @exception std::runtime_error Thrown if the file cannot be read.
          * 
          * @note This method efficiently reads the last line without loading the
          *       entire file into memory for large files.
          */
-        string readLastLine();
+        std::string readLastLine();
 
         /**
          * @brief Reads all lines from the file into a vector.
          * 
-         * @return vector<string> Vector containing all lines from the file.
+         * @return vector<std::string> Vector containing all lines from the file.
          * 
          * @exception std::runtime_error Thrown if the file cannot be read.
          * @exception std::bad_alloc Thrown if memory allocation fails for large files.
          * 
          * @note Each element in the vector represents one line from the file,
          *       with newline characters removed. Empty lines are included as
-         *       empty strings in the vector.
+         *       empty std::strings in the vector.
          */
-        vector<string> readAllLines();
+        std::vector<std::string> readAllLines();
 
         /**
          * @brief Writes content to the file.
          * 
-         * @param content The string content to write to the file.
+         * @param content The std::string content to write to the file.
          * @param append If true, appends content; otherwise overwrites the file.
          * @return bool True if write operation succeeded, false otherwise.
          * 
@@ -150,7 +150,7 @@ namespace zen::file::text {
          * 
          * @see clear()
          */
-        bool write(const string& content, bool append = false);
+        bool write(const std::string& content, bool append = false);
         
         /**
          * @brief Clears all content from the file.
@@ -167,10 +167,10 @@ namespace zen::file::text {
         /**
          * @brief Searches for a key within the file content.
          * 
-         * @param key The string to search for.
+         * @param key The std::string to search for.
          * @param isCaseSensitive If true, performs case-sensitive search; otherwise case-insensitive.
-         * @param findWholeWord If true, matches only whole words; otherwise matches substrings.
-         * @return size_t The position (byte offset) of the first occurrence, or string::npos if not found.
+         * @param findWholeWord If true, matches only whole words; otherwise matches substd::strings.
+         * @return size_t The position (byte offset) of the first occurrence, or std::string::npos if not found.
          * 
          * @exception std::runtime_error Thrown if the file cannot be read.
          * 
@@ -180,7 +180,7 @@ namespace zen::file::text {
          * 
          * @see count()
          */
-        size_t find(const string& key, bool isCaseSensitive, bool findWholeWord);
+        size_t find(const std::string& key, bool isCaseSensitive, bool findWholeWord);
         
         /**
          * @brief Counts specific items in the file based on the CountItem enumeration.
