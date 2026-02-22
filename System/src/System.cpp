@@ -11,9 +11,9 @@ namespace zen::sys {
         uname(&sysInfo);
         passwd = getpwuid(getuid());
 
-        systemInfo.name = string(sysInfo.sysname);
-        systemInfo.kernelModel = string(sysInfo.release);
-        systemInfo.architecture = string(sysInfo.machine);
+        systemInfo.name = std::string(sysInfo.sysname);
+        systemInfo.kernelModel = std::string(sysInfo.release);
+        systemInfo.architecture = std::string(sysInfo.machine);
 
         if (passwd) {
             systemInfo.username = passwd->pw_name;
@@ -27,7 +27,7 @@ namespace zen::sys {
             systemInfo.homeDirectory = home ? home : "ERROR";
 
             getcwd(cwd, sizeof(cwd));
-            systemInfo.executePath = string(cwd);
+            systemInfo.executePath = std::string(cwd);
         }
 
         systemInfo.hostName = sysInfo.nodename;
@@ -37,42 +37,42 @@ namespace zen::sys {
     CPUInfo readCpuInfo() {
         CPUInfo cpuInfo;
 
-        ifstream file("/proc/cpuinfo");
+        std::ifstream file("/proc/cpuinfo");
         if (!file.is_open()) {
-            throw runtime_error("Can't read cpu file from /proc/cpuinfo");
+            throw std::runtime_error("Can't read cpu file from /proc/cpuinfo");
         }
 
-        string line;
+        std::string line;
         int virtualCores = 0;
 
         while (getline(file, line)) {
             size_t pos = line.find(":");
 
-            if (line.find("model name") != string::npos) {
+            if (line.find("model name") != std::string::npos) {
                 cpuInfo.modelName = line.substr(pos + 2);
             }
 
-            if (line.find("model") != string::npos) {
+            if (line.find("model") != std::string::npos) {
                 cpuInfo.model = stoi(line.substr(pos + 2));
             }
 
-            if (line.find("stepping") != string::npos) {
+            if (line.find("stepping") != std::string::npos) {
                 cpuInfo.stepping = stoi(line.substr(pos + 2));
             }
 
-            if (line.find("cpu cores") != string::npos) {
+            if (line.find("cpu cores") != std::string::npos) {
                 cpuInfo.physicalCores = stoi(line.substr(pos + 2));
             }
 
-            if (line.find("microcode") != string::npos) {
+            if (line.find("microcode") != std::string::npos) {
                 cpuInfo.microcode = line.substr(pos + 2);
             }
             
-            if (line.find("processor") != string::npos) {
+            if (line.find("processor") != std::string::npos) {
                 virtualCores++;
             }
 
-            if (line.find("vendor_id") != string::npos) {
+            if (line.find("vendor_id") != std::string::npos) {
                 cpuInfo.vendorId = line.substr(pos + 2);
             }
         }
@@ -84,41 +84,41 @@ namespace zen::sys {
     MemoryInfo readMemoryInfo() {
         MemoryInfo memoryInfo;
 
-        ifstream file("/proc/meminfo");
+        std::ifstream file("/proc/meminfo");
         if (!file.is_open()) {
-            throw runtime_error("Can't read memory file from /proc/meminfo");
+            throw std::runtime_error("Can't read memory file from /proc/meminfo");
         }
 
-        string line;
+        std::string line;
 
         while (getline(file, line)) {
             size_t pos = line.find(":");
 
-            if (line.find("MemTotal") != string::npos) {
+            if (line.find("MemTotal") != std::string::npos) {
                 memoryInfo.totalSpace = stol(line.substr(pos + 2)) * 1024;
             }
 
-            if (line.find("MemFree") != string::npos) {
+            if (line.find("MemFree") != std::string::npos) {
                 memoryInfo.freeSpace = stol(line.substr(pos + 2)) * 1024;
             }
 
-            if (line.find("Buffers") != string::npos) {
+            if (line.find("Buffers") != std::string::npos) {
                 memoryInfo.buffers = stol(line.substr(pos + 2)) * 1024;
             }
 
-            if (line.find("Cached") != string::npos) {
-                memoryInfo.cahced = stol(line.substr(pos + 2)) * 1024;
+            if (line.find("Cached") != std::string::npos) {
+                memoryInfo.cached = stol(line.substr(pos + 2)) * 1024;
             }
 
-            if (line.find("SwapTotal") != string::npos) {
+            if (line.find("SwapTotal") != std::string::npos) {
                 memoryInfo.swapTotalSpace = stol(line.substr(pos + 2)) * 1024;
             }
 
-            if (line.find("SwapFree") != string::npos) {
+            if (line.find("SwapFree") != std::string::npos) {
                 memoryInfo.swapFreeSpace = stol(line.substr(pos + 2)) * 1024;
             }
 
-            if (line.find("SwapCached") != string::npos) {
+            if (line.find("SwapCached") != std::string::npos) {
                 memoryInfo.swapCached = stol(line.substr(pos + 2)) * 1024;
             }
         }
@@ -126,27 +126,27 @@ namespace zen::sys {
         return memoryInfo;
     }
 
-    void copyText(const string& text) {
-        string command = "echo \"" + text + "\" | xclip -selection clipboard";
+    void copyText(const std::string& text) {
+        std::string command = "echo \"" + text + "\" | xclip -selection clipboard";
         system(command.c_str());
     }
 
-    string getTimeDate(SystemTime sysTime) {
+    std::string getTimeDate(TimeFormat timeFormat) {
         time_t now = time(0);
         tm* localTime = localtime(&now);
 
         char buffer[21];
 
-        switch(sysTime) {
-            case SystemTime::Time:
+        switch(timeFormat) {
+            case TimeFormat::Time:
                 strftime(buffer, sizeof(buffer), "%H:%M:%S", localTime);
                 break;
 
-            case SystemTime::Date:
+            case TimeFormat::Date:
                 strftime(buffer, sizeof(buffer), "%Y/%m/%d", localTime);
                 break;
 
-            case SystemTime::Both:
+            case TimeFormat::Both:
                 strftime(buffer, sizeof(buffer), "%H:%M:%S %Y/%m/%d", localTime);
                 break;
         }
@@ -154,16 +154,16 @@ namespace zen::sys {
         return buffer;
     }
 
-    string pasteFromClipboard() {
+    std::string pasteFromClipboard() {
         const char* command = "xclip -selection clipboard -o 2>/dev/null";
         FILE *fp = popen(command, "r");
 
         if (!fp) {
-            throw runtime_error("Failed to open pipe to xclip\n");
+            throw std::runtime_error("Failed to open pipe to xclip\n");
         }
     
-        array<char, 4096> buffer{};
-        string result;
+        std::array<char, 4096> buffer{};
+        std::string result;
     
         while (fgets(buffer.data(), buffer.size(), fp)) {
             result += buffer.data();
@@ -177,8 +177,8 @@ namespace zen::sys {
         return result;
     }
 
-    bool openFile(const string& path) {
-        string command = "xdg-open \"" + path + "\"";
+    bool openFile(const std::string& path) {
+        std::string command = "xdg-open \"" + path + "\"";
         return system(command.c_str()) == 0;
     }
 }
